@@ -2,13 +2,16 @@
   "name": "cryptowhale",
   "version": "1.0.0",
   "description": "",
-  "main": "./src/app.js",
+  "main": "./js/index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
-  "dependencies": {},
+  "dependencies": {
+    "webpack": "^5.38.1",
+    "webpack-cli": "^4.7.2"
+  },
   "devDependencies": {}
 }
