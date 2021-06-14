@@ -1,5 +1,5 @@
-import Home from "../views/home.js";
-import Details from "../views/details.js";
+import Home from "../views/home";
+import Details from "../views/details";
 
 const router = async () => {
   const routes = [
@@ -17,6 +17,7 @@ const router = async () => {
 
   let match = potentialMatches.find((potentialMatch) => potentialMatch.isMatch);
 
+  // if no match redirect to home screen
   if (!match) {
     match = {
       route: routes[0],
@@ -24,8 +25,12 @@ const router = async () => {
     };
   }
 
-  const view = new match.route.view();
+  const currency = "BTCUSDT";
+  const interval = "1d";
+
+  const view = new match.route.view(currency, interval);
   document.querySelector("#app").innerHTML = await view.getHtml();
+  await view.getData();
 };
 
 export default router;

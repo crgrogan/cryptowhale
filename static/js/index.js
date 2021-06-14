@@ -1,4 +1,5 @@
-import router from "./helpers/router.js";
+import "../styles/index.css";
+import router from "./helpers/router";
 
 const app = {
   init() {

@@ -1,0 +1,90 @@
+/* CSS reset */
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html {
+  font-size: 62.5%; /* 1rem = 10px */
+  min-height: 100%;
+}
+
+body {
+  line-height: 1.6;
+  scroll-behavior: smooth;
+  font-size: 16px;
+  font-size: 1.6rem;
+  font-family: Arial, Helvetica, sans-serif;
+}
+
+h1 {
+  font-size: 3.6rem;
+}
+h2 {
+  font-size: 2.4rem;
+}
+h3 {
+  font-size: 1.9rem;
+}
+
+h4 {
+  font-size: 1.6rem;
+}
+
+textarea {
+  resize: vertical;
+}
+
+input,
+textarea {
+  font-family: inherit;
+}
+::-webkit-input-placeholder {
+  font-family: inherit;
+}
+:-moz-placeholder {
+  font-family: inherit;
+}
+::-moz-placeholder {
+  font-family: inherit;
+}
+:-ms-input-placeholder {
+  font-family: inherit;
+}
+
+ul {
+  list-style-type: none;
+  margin: 0;
+  padding: 0;
+}
+
+a {
+  text-decoration: none;
+  color: inherit;
+}
+
+button:hover {
+  cursor: pointer;
+}
+
+.wrapper {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  margin: 0 auto;
+}
+
+.content {
+  flex-grow: 1;
+}
+
+/* Navbar */
+
+/* Footer */
+footer {
+  text-align: center;
+  padding: 1em;
+  border-top: 1px solid lightgray;
+}
