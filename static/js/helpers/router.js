@@ -1,7 +1,7 @@
 import Home from "../views/home";
 import Details from "../views/details";
 
-const router = async () => {
+const router = async (currency, interval) => {
   const routes = [
     { path: "/", view: Home },
     { path: "/details", view: Details },
@@ -24,10 +24,6 @@ const router = async () => {
       isMatch: true,
     };
   }
-
-  const currency = "BTCUSDT";
-  const interval = "1d";
-
   const view = new match.route.view(currency, interval);
   document.querySelector("#app").innerHTML = await view.getHtml();
   await view.getData();

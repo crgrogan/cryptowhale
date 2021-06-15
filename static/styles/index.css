@@ -1,5 +1,4 @@
 /* CSS reset */
-
 * {
   margin: 0;
   padding: 0;
@@ -17,6 +16,7 @@ body {
   font-size: 16px;
   font-size: 1.6rem;
   font-family: Arial, Helvetica, sans-serif;
+  background-color: #fafafa;
 }
 
 h1 {
@@ -80,7 +80,22 @@ button:hover {
   flex-grow: 1;
 }
 
+#app {
+  padding: 2em 0;
+}
+
 /* Navbar */
+
+/* Home */
+#app h1 {
+  margin: 1em 0;
+}
+
+/* Ticker Card */
+.ticker-price {
+  font-size: 2rem;
+  font-weight: 700;
+}
 
 /* Footer */
 footer {

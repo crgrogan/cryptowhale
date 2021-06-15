@@ -1,29 +1,38 @@
 // get ticker price and render to screen
-export const getTicker = (currency) => {
-  const tickerPriceElement = document.getElementById("ticker-price");
-  let lastPrice = null;
-  let tickerWs = new WebSocket(
-    `wss://stream.binance.com:9443/ws/${currency.toLowerCase()}@trade`
-  );
+export const getTicker = (currencyList) => {
+  // loop through currency list and build url
+  let urlParams = currencyList
+    .map((currency) => {
+      return `${currency.replace("/", "").toLowerCase()}@miniTicker`;
+    })
+    .join("/");
+  let tickerWs = new WebSocket(`wss://stream.binance.com:9443/ws/${urlParams}`);
 
   tickerWs.onmessage = (e) => {
     let data = JSON.parse(e.data);
-    let price = parseFloat(data.p).toFixed(2);
+    let price = parseFloat(data.c);
+    let percentChange = (((data.c - data.o) / data.o) * 100).toFixed(2);
+    // find dom element with the id that matches the currency symbol
+    const tickerPriceElement = document.getElementById(`${data.s}-price`);
+    const tickerChangeElement = document.getElementById(`${data.s}-change`);
     tickerPriceElement.innerText = price;
-    tickerPriceElement.style.color =
-      !lastPrice || lastPrice === price
-        ? "black"
-        : price < lastPrice
-        ? "red"
-        : "green";
-    lastPrice = price;
+    if (percentChange > 0) {
+      tickerChangeElement.innerText = `+${percentChange}%`;
+      tickerChangeElement.style.color = "green";
+    } else {
+      tickerChangeElement.innerText = `+${percentChange}%`;
+      tickerChangeElement.style.color = "red";
+    }
   };
 };
 
 // get candlestick data and render candlestick chart to screen
 export const getCandlestick = (currency, interval) => {
   const chartElement = document.getElementById("chart");
-  const url = `https://api.binance.com/api/v3/klines?symbol=${currency}&interval=${interval}`;
+  const url = `https://api.binance.com/api/v3/klines?symbol=${currency.replace(
+    "/",
+    ""
+  )}&interval=${interval}`;
   let candlesticksArr = [];
   let chart = LightweightCharts.createChart(chartElement, {
     width: 600,
@@ -79,7 +88,9 @@ export const getCandlestick = (currency, interval) => {
 
   // update chart with new candles from websocket stream
   let candlestickWs = new WebSocket(
-    `wss://stream.binance.com:9443/ws/${currency.toLowerCase()}@kline_${interval}`
+    `wss://stream.binance.com:9443/ws/${currency
+      .replace("/", "")
+      .toLowerCase()}@kline_${interval}`
   );
 
   candlestickWs.onmessage = (e) => {
