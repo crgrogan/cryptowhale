@@ -1,29 +1,70 @@
+import { app } from "../index";
+
 // get ticker price and render to screen
-export const getTicker = (currencyList) => {
-  // loop through currency list and build url
-  let urlParams = currencyList
-    .map((currency) => {
-      return `${currency.replace("/", "").toLowerCase()}@miniTicker`;
-    })
-    .join("/");
-  let tickerWs = new WebSocket(`wss://stream.binance.com:9443/ws/${urlParams}`);
+export const getTicker = (coinList) => {
+  // loop through coin list and build params list
+  let params = coinList.map((coin) => {
+    return `${coin.replace("/", "").toLowerCase()}@miniTicker`;
+  });
+
+  let tickerWs = new WebSocket(`wss://stream.binance.com:9443/ws`);
+
+  tickerWs.onopen = () => {
+    tickerWs.send(
+      JSON.stringify({
+        method: "SUBSCRIBE",
+        params: params,
+        id: 1,
+      })
+    );
+  };
 
   tickerWs.onmessage = (e) => {
     let data = JSON.parse(e.data);
-    let price = parseFloat(data.c);
-    let percentChange = (((data.c - data.o) / data.o) * 100).toFixed(2);
-    // find dom element with the id that matches the currency symbol
-    const tickerPriceElement = document.getElementById(`${data.s}-price`);
-    const tickerChangeElement = document.getElementById(`${data.s}-change`);
-    tickerPriceElement.innerText = price;
-    if (percentChange > 0) {
-      tickerChangeElement.innerText = `+${percentChange}%`;
-      tickerChangeElement.style.color = "green";
-    } else {
-      tickerChangeElement.innerText = `+${percentChange}%`;
-      tickerChangeElement.style.color = "red";
+    // only execute if stream returns market data, as opposed to the null
+    // object that is returned on subscribe/unsubscribe
+    if (data.s) {
+      let price = parseFloat(data.c);
+      let percentChange = (((data.c - data.o) / data.o) * 100).toFixed(2);
+      // find dom element with the id that matches the currency symbol
+      const tickerPriceElement = document.getElementById(`${data.s}-price`);
+      const tickerChangeElement = document.getElementById(`${data.s}-change`);
+      if (tickerPriceElement && tickerChangeElement) {
+        tickerPriceElement.innerText = price;
+        tickerChangeElement.innerText = `${percentChange}%`;
+        if (percentChange > 0) {
+          tickerChangeElement.style.color = "green";
+        } else {
+          tickerChangeElement.style.color = "red";
+        }
+      }
     }
   };
+
+  // unsubscribe from websocket stream
+  const unsubscribe = (e) => {
+    e.stopImmediatePropagation();
+    let newCurrency = e.target.textContent;
+    let currentCurrency =
+      document.getElementById("selected-currency").textContent;
+    if (newCurrency !== currentCurrency) {
+      document.getElementById("selected-currency").textContent = newCurrency;
+      tickerWs.send(
+        JSON.stringify({
+          method: "UNSUBSCRIBE",
+          params: params,
+          id: 1,
+        })
+      );
+      app.load(newCurrency);
+    }
+  };
+
+  // if selected currency changes
+  const currencyOptions = document.querySelectorAll(".currency-option");
+  currencyOptions.forEach((option) =>
+    option.addEventListener("click", unsubscribe)
+  );
 };
 
 // get candlestick data and render candlestick chart to screen

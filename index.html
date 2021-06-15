@@ -14,20 +14,37 @@
       href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css"
     />
     <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     <script src="https://unpkg.com/lightweight-charts/dist/lightweight-charts.standalone.production.js"></script>
   </head>
   <body>
+    <!-- Navbar -->
     <div class="wrapper">
+      <div class="navbar-fixed">
+        <ul id="dropdown1" class="dropdown-content">
+          <li class="currency-option"><a>EUR</a></li>
+          <li class="divider"></li>
+          <li class="currency-option"><a>BUSD</a></li>
+        </ul>
+        <nav class="blue-grey">
+          <div class="container">
+            <a href="/" class="left" id="brand-logo">CryptoWhale</a>
+            <ul class="right">
+              <li>
+                <a class="dropdown-trigger" data-target="dropdown1"
+                  ><span id="selected-currency">EUR</span
+                  ><i class="material-icons right">arrow_drop_down</i></a
+                >
+              </li>
+            </ul>
+          </div>
+        </nav>
+      </div>
+      <!-- Main -->
       <div class="content">
-        <div class="navbar-fixed">
-          <nav class="blue-grey">
-            <div class="container">
-              <a href="/" class="brand-logo left">CryptoWhale</a>
-            </div>
-          </nav>
-        </div>
         <div class="container" id="app"></div>
       </div>
+      <!-- Footer -->
       <footer class="page-footer blue-grey">CryptoWhale &copy; 2021</footer>
     </div>
   </body>

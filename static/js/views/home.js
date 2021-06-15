@@ -3,19 +3,19 @@ import { getTicker } from "../helpers/data-service";
 import "../components/TickerCard";
 
 class Home extends AbstractView {
-  constructor(currencyList) {
+  constructor(coinList) {
     super();
     this.setTitle("Home");
-    this.currencyList = currencyList;
+    this.coinList = coinList;
   }
 
   async getHtml() {
     return `
-            <h1>Selected Cryptos</h1>
+            <h1>24 Hour Tickers</h1>
             <div class="row">
-            ${this.currencyList
-              .map((currency) => {
-                return `<ticker-card currency=${currency}></ticker-card>`;
+            ${this.coinList
+              .map((coin) => {
+                return `<ticker-card coin=${coin}></ticker-card>`;
               })
               .join("")}
             </div>
@@ -23,7 +23,7 @@ class Home extends AbstractView {
   }
 
   async getData() {
-    getTicker(this.currencyList);
+    getTicker(this.coinList);
   }
 }
 

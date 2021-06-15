@@ -1,17 +1,24 @@
 import "../styles/index.css";
 import router from "./helpers/router";
+import { coinList } from "./data/coin-list";
 
-const app = {
-  currencyList: ["BTC/EUR", "ETH/EUR", "DOGE/EUR", "SHIB/EUR", "LTC/EUR"],
+export const app = {
   interval: "1d",
   init() {
-    document.addEventListener("DOMContentLoaded", app.load);
-    window.addEventListener("popstate", app.load);
+    document.addEventListener("DOMContentLoaded", () => {
+      // initialise dropdown functionality in navbar
+      const elems = document.querySelectorAll(".dropdown-trigger");
+      const instances = M.Dropdown.init(elems);
+      // load relevant route
+      const currency = document.getElementById("selected-currency").textContent;
+      app.load(currency);
+    });
   },
 
-  load() {
+  load(currency) {
     // app.showLoading()
-    router(app.currencyList, app.interval);
+    let list = coinList.map((coin) => coin + `/${currency}`);
+    router(list, app.interval);
   },
 
   showLoading() {
