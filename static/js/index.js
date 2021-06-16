@@ -7,8 +7,8 @@ export const app = {
   init() {
     document.addEventListener("DOMContentLoaded", () => {
       // initialise dropdown functionality in navbar
-      const elems = document.querySelectorAll(".dropdown-trigger");
-      const instances = M.Dropdown.init(elems);
+      const elements = document.querySelectorAll(".dropdown-trigger");
+      const instances = M.Dropdown.init(elements);
       // load relevant route
       const currency = document.getElementById("selected-currency").textContent;
       app.load(currency);

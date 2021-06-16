@@ -99,10 +99,23 @@ button:hover {
   margin: 1em 0;
 }
 
+/* Carousel */
+.carousel-item {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  background-color: #ffd000;
+}
+
 /* Ticker Card */
+ticker-card div {
+  background-color: #ebe8e8;
+  padding: 0.25em 0;
+  font-weight: 700;
+}
+
 .ticker-price {
   font-size: 2rem;
-  font-weight: 700;
 }
 
 /* Footer */
