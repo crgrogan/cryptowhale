@@ -1,6 +1,6 @@
 import "../styles/index.css";
 import router from "./helpers/router";
-import { coinList } from "./data/coin-list";
+import data from "./data/data";
 
 export const app = {
   interval: "1d",
@@ -9,20 +9,19 @@ export const app = {
       // initialise dropdown functionality in navbar
       const elements = document.querySelectorAll(".dropdown-trigger");
       const instances = M.Dropdown.init(elements);
+      // get saved currency option from local storage
+      const currency =
+        localStorage.getItem("currency") ||
+        document.getElementById("selected-currency").textContent;
+      document.getElementById("selected-currency").textContent = currency;
       // load relevant route
-      const currency = document.getElementById("selected-currency").textContent;
       app.load(currency);
     });
   },
 
   load(currency) {
-    // app.showLoading()
-    let list = coinList.map((coin) => coin + `/${currency}`);
-    router(list, app.interval);
-  },
-
-  showLoading() {
-    // loading spinner
+    let list = data.coinList.map((coin) => coin + `/${currency}`);
+    router(list, data.interval);
   },
 };
 

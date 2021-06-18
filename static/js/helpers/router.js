@@ -24,6 +24,7 @@ const router = async (coin, interval) => {
       isMatch: true,
     };
   }
+
   const view = new match.route.view(coin, interval);
   document.querySelector("#app").innerHTML = await view.getHtml();
   await view.getData();

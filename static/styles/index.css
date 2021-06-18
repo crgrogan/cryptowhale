@@ -80,8 +80,8 @@ button:hover {
   flex-grow: 1;
 }
 
-#app {
-  padding: 2em 0;
+.content {
+  padding: 3em 0 4em 0;
 }
 
 /* Navbar */
@@ -118,9 +118,64 @@ ticker-card div {
   font-size: 2rem;
 }
 
+/* Details */
+#candlestick-info {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 2em;
+}
+
+#candlestick-info .left {
+  display: flex;
+  flex-wrap: wrap;
+  margin-right: 3em;
+}
+
+#candlestick-info .right {
+  width: 100%;
+  display: grid;
+  row-gap: 0.5em;
+  grid-template-columns: repeat(auto-fit, minmax(70px, 1fr));
+}
+
+#candlestick-info div {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  text-align: center;
+}
+
+#candlestick-info-coin {
+  font-size: 2rem;
+  font-weight: 700;
+}
+
+#candlestick-info-ticker {
+  font-size: 2rem;
+}
+
+.candlestick-info-title {
+  font-size: 1.2rem;
+  color: #818181;
+}
+
+#candlestick-interval {
+  margin-top: 1em;
+}
+
+#candlestick-interval span {
+  font-weight: 700;
+}
+
 /* Footer */
 footer {
   text-align: center;
   padding: 1em;
   border-top: 1px solid lightgray;
+}
+
+@media screen and (max-width: 576px) {
+  #candlestick-info .left {
+    margin-right: 1em;
+  }
 }

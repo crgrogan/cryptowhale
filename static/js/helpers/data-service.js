@@ -1,5 +1,7 @@
 import { app } from "../index";
-import { getWindowWidth } from "./get-window-width";
+import { getContainerWidth } from "./get-container-width";
+import { changeCurrency } from "./change-currency";
+import { numberFormatter } from "./number-formatter";
 
 /* get ticker price and render to screen */
 export const getTicker = (coinList) => {
@@ -8,6 +10,7 @@ export const getTicker = (coinList) => {
     return `${coin.replace("/", "").toLowerCase()}@miniTicker`;
   });
 
+  // connect to websocket
   let tickerWs = new WebSocket(`wss://stream.binance.com:9443/ws`);
 
   tickerWs.onopen = () => {
@@ -26,12 +29,20 @@ export const getTicker = (coinList) => {
     // object that is returned on subscribe/unsubscribe
     if (data.s) {
       let price = parseFloat(data.c);
+      let high = parseFloat(data.h);
+      let low = parseFloat(data.l);
+      let volume = numberFormatter(data.q);
       let percentChange = (((data.c - data.o) / data.o) * 100).toFixed(2);
       // find dom element with the id that matches the currency symbol
       const tickerPriceElement = document.getElementById(`${data.s}-price`);
       const tickerChangeElement = document.getElementById(`${data.s}-change`);
-      if (tickerPriceElement && tickerChangeElement) {
+      const tickerHighElement = document.getElementById(`${data.s}-high`);
+      const tickerLowElement = document.getElementById(`${data.s}-low`);
+      const tickerVolumeElement = document.getElementById(`${data.s}-volume`);
+      if (tickerPriceElement) {
         tickerPriceElement.innerText = price;
+      }
+      if (tickerChangeElement) {
         tickerChangeElement.innerText = `${percentChange}%`;
         if (percentChange > 0) {
           tickerChangeElement.style.color = "green";
@@ -39,49 +50,63 @@ export const getTicker = (coinList) => {
           tickerChangeElement.style.color = "red";
         }
       }
+      if (tickerHighElement) {
+        tickerHighElement.innerText = high;
+      }
+      if (tickerLowElement) {
+        tickerLowElement.innerText = low;
+      }
+      if (tickerVolumeElement) {
+        tickerVolumeElement.innerText = volume;
+      }
     }
   };
 
   // unsubscribe from websocket stream
   const unsubscribe = (e) => {
-    e.stopImmediatePropagation();
-    let newCurrency = e.target.textContent;
-    let currentCurrency =
-      document.getElementById("selected-currency").textContent;
-    if (newCurrency !== currentCurrency) {
-      document.getElementById("selected-currency").textContent = newCurrency;
-      tickerWs.send(
-        JSON.stringify({
-          method: "UNSUBSCRIBE",
-          params: params,
-          id: 1,
-        })
-      );
-      app.load(newCurrency);
-    }
+    const newCurrency = e.target.textContent;
+    tickerWs.send(
+      JSON.stringify({
+        method: "UNSUBSCRIBE",
+        params: params,
+        id: 1,
+      })
+    );
+    app.load(newCurrency);
   };
 
-  // if selected currency changes and on home page
+  // add event listener for currency change in navbar
   const currencyOptions = document.querySelectorAll(".currency-option");
-  if (window.location.pathname === "/") {
-    currencyOptions.forEach((option) =>
-      option.addEventListener("click", unsubscribe)
-    );
-  }
+  currencyOptions.forEach((option) =>
+    option.addEventListener("click", (e) => {
+      if (window.location.pathname === "/") {
+        const currencyChanged = changeCurrency(e);
+        // only unsubscribe from stream if current
+        // currency was changed to a new currency
+        if (currencyChanged) {
+          unsubscribe(e);
+        }
+      } else {
+        changeCurrency(e);
+      }
+    })
+  );
 };
 
 /* get candlestick data and render candlestick chart to screen */
 export const getCandlestick = (currency, interval) => {
-  const chartElement = document.getElementById("chart");
+  const chartElement = document.getElementById("candlestick-chart");
   const url = `https://api.binance.com/api/v3/klines?symbol=${currency.replace(
     "/",
     ""
   )}&interval=${interval}`;
+
   let candlesticksArr = [];
+  let lastPrice = null;
 
   // configure general style for chart
   let chart = LightweightCharts.createChart(chartElement, {
-    width: getWindowWidth(),
+    width: getContainerWidth(),
     height: 300,
     layout: {
       backgroundColor: "#1a1a1a",
@@ -112,7 +137,7 @@ export const getCandlestick = (currency, interval) => {
 
   // resize chart on window resize
   const resize = new ResizeObserver(() => {
-    chart.resize(getWindowWidth(), 300);
+    chart.resize(getContainerWidth(), 300);
   });
 
   resize.observe(document.body);
@@ -180,9 +205,18 @@ export const getCandlestick = (currency, interval) => {
   candlestickWs.onmessage = (e) => {
     let data = JSON.parse(e.data);
     let newCandlestick = data.k;
-    const candleStickTickerElement =
-      document.getElementById("candlestick-ticker");
-    candleStickTickerElement.textContent = parseFloat(newCandlestick.c);
+    const candleStickTickerElement = document.getElementById(
+      "candlestick-info-ticker"
+    );
+    let price = parseFloat(newCandlestick.c);
+    candleStickTickerElement.textContent = price;
+    candleStickTickerElement.style.color =
+      !lastPrice || lastPrice === price
+        ? "black"
+        : price < lastPrice
+        ? "red"
+        : "green";
+    lastPrice = price;
 
     candleSeries.update({
       time: newCandlestick.t / 1000,
