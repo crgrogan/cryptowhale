@@ -14,20 +14,19 @@ module.exports = merge(common, {
     clean: true,
   },
   optimization: {
-    minimizer: [
-      new OptimizeCssAssetsPlugin(),
-      new TerserPlugin(),
-      new HtmlWebpackPlugin({
-        template: "index.html",
-        minify: {
-          removeAttributeQuotes: true,
-          collapseWhitespace: true,
-          removeComments: true,
-        },
-      }),
-    ],
+    minimizer: [new OptimizeCssAssetsPlugin(), new TerserPlugin()],
   },
-  plugins: [new MiniCssExtractPlugin({ filename: "[name].[contenthash].css" })],
+  plugins: [
+    new HtmlWebpackPlugin({
+      template: "index.html",
+      minify: {
+        removeAttributeQuotes: true,
+        collapseWhitespace: true,
+        removeComments: true,
+      },
+    }),
+    new MiniCssExtractPlugin({ filename: "[name].[contenthash].css" }),
+  ],
   module: {
     rules: [
       {
