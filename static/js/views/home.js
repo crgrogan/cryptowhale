@@ -14,7 +14,10 @@ class Home extends AbstractView {
       <div class="carousel">
         ${this.coinList
           .map((coin) => {
-            return `<ticker-card class="carousel-item center z-depth-2" coin=${coin}></ticker-card>`;
+            return `
+            <a href='details#${coin.replace("/", "_")}'>
+              <ticker-card class="carousel-item center z-depth-2" coin=${coin}></ticker-card>
+            </a>`;
           })
           .join("")}  
       </div>  

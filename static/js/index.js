@@ -1,7 +1,6 @@
 import "../styles/index.css";
 import router from "./helpers/router";
 import data from "./data/data";
-console.log("hello");
 export const app = {
   interval: "1d",
   init() {
