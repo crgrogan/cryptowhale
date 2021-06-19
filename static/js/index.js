@@ -1,7 +1,7 @@
 import "../styles/index.css";
 import router from "./helpers/router";
 import data from "./data/data";
-
+console.log("hello");
 export const app = {
   interval: "1d",
   init() {
@@ -10,9 +10,7 @@ export const app = {
       const elements = document.querySelectorAll(".dropdown-trigger");
       const instances = M.Dropdown.init(elements);
       // get saved currency option from local storage
-      const currency =
-        localStorage.getItem("currency") ||
-        document.getElementById("selected-currency").textContent;
+      const currency = localStorage.getItem("currency") || data.defaultCurrency;
       document.getElementById("selected-currency").textContent = currency;
       // load relevant route
       app.load(currency);

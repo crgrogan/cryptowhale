@@ -1,11 +1,10 @@
 const path = require("path");
+const common = require("./webpack.common");
+const { merge } = require("webpack-merge");
 const HtmlWebpackPlugin = require("html-webpack-plugin");
 
-module.exports = {
+module.exports = merge(common, {
   mode: "development",
-  entry: {
-    index: "./static/js/index.js",
-  },
   devtool: "inline-source-map",
   devServer: {
     contentBase: "./dist",
@@ -16,6 +15,11 @@ module.exports = {
       template: "index.html",
     }),
   ],
+  output: {
+    filename: "[name].bundle.js",
+    path: path.resolve(__dirname, "dist"),
+    clean: true,
+  },
   module: {
     rules: [
       {
@@ -24,9 +28,4 @@ module.exports = {
       },
     ],
   },
-  output: {
-    filename: "[name].bundle.js",
-    path: path.resolve(__dirname, "dist"),
-    clean: true,
-  },
-};
+});
